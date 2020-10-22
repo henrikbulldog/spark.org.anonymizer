@@ -1,0 +1,31 @@
+*.class
+*.log
+.ssh/
+
+# sbt specific
+.cache/
+.history/
+.lib/
+.sbt/
+.ivy2/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/*
+!project/Dependencies.scala
+scalastyle-config.xml
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.idea
+.bloop/
+.metals/
+.scalafmt.conf
+
+# Laerdal test run directory
+null/
+testruns/
+
+.vscode/
