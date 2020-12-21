@@ -1,5 +1,4 @@
-package org.spark.utils
-package test
+package com.laerdal.spark.utils.test
 
 import org.scalatest.{FlatSpec}
 
@@ -9,7 +8,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec}
-import org.spark.Anonymizer
+import com.laerdal.spark.utils.Anonymizer
+import com.laerdal.spark.utils.Anonymizer.Extensions
 
 // scalastyle:off null
 class AnonymizerTest extends FlatSpec {
@@ -22,31 +22,31 @@ class AnonymizerTest extends FlatSpec {
 
   "Anonymizing a string" should "be format presreving" in {
     var s = ""
-    for(c <- 'a' to 'z') {
+    for (c <- 'a' to 'z') {
       s = s + c
     }
-    var a = Anonymizer.anonymize_string(s).get
+    var a = Anonymizer.anonymizeString(s).get
     assert(a.length == s.length)
     assert(a.matches("^[a-z]+$"))
 
     s = ""
-    for(c <- 'A' to 'Z') {
+    for (c <- 'A' to 'Z') {
       s = s + c
     }
-    a = Anonymizer.anonymize_string(s).get
+    a = Anonymizer.anonymizeString(s).get
     assert(a.length == s.length)
     assert(a.matches("^[A-Z]+$"))
 
     s = ""
-    for(c <- '0' to '9') {
+    for (c <- '0' to '9') {
       s = s + c
     }
-    a = Anonymizer.anonymize_string(s).get
+    a = Anonymizer.anonymizeString(s).get
     assert(a.length == s.length)
     assert(a.matches("^[0-9]+$"))
 
     s = " -_.:,;@$"
-    a = Anonymizer.anonymize_string(s).get
+    a = Anonymizer.anonymizeString(s).get
     assert(a == s)
   }
 
@@ -64,10 +64,23 @@ class AnonymizerTest extends FlatSpec {
         Decimal(123.45),
         Timestamp.valueOf(LocalDateTime.now),
         new Date(System.currentTimeMillis())
+      ),
+      Types(
+        1,
+        "",
+        0,
+        0,
+        0,
+        0,
+        0.0.toFloat,
+        0.0,
+        Decimal(0.0),
+        null,
+        null
       )
     ).toDF()
 
-    val anonymized_df = Anonymizer.anonymize(original_df, (p => p != "id"))
+    val anonymized_df = original_df.anonymize((p => p != "id"))
 
     val should_be_empty_df = anonymized_df
       .as("a")
@@ -103,10 +116,10 @@ class AnonymizerTest extends FlatSpec {
       )
     ).toDF()
 
-    var anonymized_1_df = Anonymizer.anonymize(original_df, (p => p != "id"))
+    var anonymized_1_df = original_df.anonymize((p => p != "id"))
     anonymized_1_df = anonymized_1_df
       .withColumn("hash", hash(anonymized_1_df.columns.map(col): _*))
-    var anonymized_2_df = Anonymizer.anonymize(original_df, (p => p != "id"))
+    var anonymized_2_df = original_df.anonymize((p => p != "id"))
     anonymized_2_df = anonymized_2_df
       .withColumn("hash", hash(anonymized_2_df.columns.map(col): _*))
 

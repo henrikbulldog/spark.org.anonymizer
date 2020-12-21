@@ -2,7 +2,8 @@ name := "spark-org-anonymizer"
 
 version := "1.0.0"
 scalaVersion := "2.11.12"
-organization := "spark.org"
+organization := "com.laerdal"
+organizationName := "Laerdal Copenhagen"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-Yrangepos", "-Ywarn-unused-import")
 Compile / doc / scalacOptions := Seq("-groups", "-implicits", "-diagrams", "-diagrams-debug")
@@ -16,12 +17,26 @@ copyDocAssetsTask := {
 
 copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).value
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.5"
-libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.1"
-libraryDependencies += "io.spray" %% "spray-json" % "1.3.5"
-libraryDependencies += "com.amazonaws" % "aws-java-sdk-core" % "1.11.550"
-libraryDependencies += "com.amazonaws" % "aws-encryption-sdk-java" % "1.3.6"
-libraryDependencies += "com.amazonaws" % "aws-java-sdk" % "1.11.550"
-libraryDependencies += "com.typesafe" % "config" % "1.3.4"
-libraryDependencies += "com.databricks" % "dbutils-api_2.11" % "0.0.3"
-libraryDependencies += "io.delta" %% "delta-core" % "0.5.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
+
+homepage := Some(url("https://github.com/henrikbulldog/spark.org.anonymizer"))
+licenses := Seq("UNLICENSE" -> url("https://unlicense.org"))
+publishMavenStyle := true
+publishArtifact in Test := false
+pomIncludeRepository := { _ => false }
+publishTo in ThisBuild := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/henrikbulldog/spark.org.anonymizer"),
+    "scm:git:git@github.com:henrikbulldog/spark.org.anonymizer.git"
+  )
+)
+developers := List(
+  Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/"))
+)
