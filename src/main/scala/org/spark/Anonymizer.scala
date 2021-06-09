@@ -305,7 +305,21 @@ object Anonymizer extends Serializable {
         val anonymizedFields = fields.map(kv => (kv._1 -> anonymizeJsonAst(kv._2)))
         JsObject(anonymizedFields)
       case JsString(_) =>
-        JsString(Anonymizer.anonymizeString(Option(jsValue.asInstanceOf[JsString].value)).get)
+        val jsString = jsValue.asInstanceOf[JsString]
+        val s = jsString.value
+        val anonymizedString = Anonymizer.anonymizeString(Option(s))
+        anonymizedString match {
+          case None => JsNull
+          case _ => JsString(anonymizedString.get)
+        }
+      case JsNumber(_) =>
+        val jsNumber = jsValue.asInstanceOf[JsNumber]
+        val s = jsNumber.toString
+        val anonymizedString = Anonymizer.anonymizeString(Option(s))
+        anonymizedString match {
+          case None => JsNull
+          case _ => JsNumber(new BigDecimal(anonymizedString.get))
+        }
       case _ => jsValue
     }
   }
