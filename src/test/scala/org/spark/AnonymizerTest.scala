@@ -25,7 +25,7 @@ class AnonymizerTest extends FlatSpec {
     for (c <- 'a' to 'z') {
       s = s + c
     }
-    var a = Anonymizer.anonymizeString(s).get
+    var a = Anonymizer.anonymizeString(Option(s)).get
     assert(a.length == s.length)
     assert(a.matches("^[a-z]+$"))
 
@@ -33,7 +33,7 @@ class AnonymizerTest extends FlatSpec {
     for (c <- 'A' to 'Z') {
       s = s + c
     }
-    a = Anonymizer.anonymizeString(s).get
+    a = Anonymizer.anonymizeString(Option(s)).get
     assert(a.length == s.length)
     assert(a.matches("^[A-Z]+$"))
 
@@ -41,12 +41,12 @@ class AnonymizerTest extends FlatSpec {
     for (c <- '0' to '9') {
       s = s + c
     }
-    a = Anonymizer.anonymizeString(s).get
+    a = Anonymizer.anonymizeString(Option(s)).get
     assert(a.length == s.length)
     assert(a.matches("^[0-9]+$"))
 
     s = " -_.:,;@$"
-    a = Anonymizer.anonymizeString(s).get
+    a = Anonymizer.anonymizeString(Option(s)).get
     assert(a == s)
   }
 
@@ -136,6 +136,7 @@ class AnonymizerTest extends FlatSpec {
       "Product 1",
       123,
       123.45,
+      true,
       Array(
         OrderHistory("created"),
         OrderHistory("modified")
@@ -146,6 +147,7 @@ class AnonymizerTest extends FlatSpec {
       "Product 2",
       123456,
       12345.78,
+      false,
       Array(
         OrderHistory("created")
       )
@@ -159,24 +161,51 @@ class AnonymizerTest extends FlatSpec {
           "john.johnson1234@mail.com"
         ),
         Timestamp.valueOf(LocalDateTime.now),
-        Array(order1, order2)
+        Array(order1, order2),
+        Map(1 -> Category(1, "Cat 1"), 2-> Category(2, "Cat 2"))
       ),
       Customer(
         1000000002,
         null,
         Timestamp.valueOf(LocalDateTime.now),
+        null,
         null
       )
     )
   }
 
+  "Anonymizing complex data types" should "be supported" in {
+    var original_df = createCustomers.toDF
+
+    val anonymized_df = original_df.anonymize((p => p != "id"))
+
+    original_df.show(false)
+    anonymized_df.show(false)
+    
+    assert(original_df.count == anonymized_df.count)
+
+    val should_be_empty_df = anonymized_df
+      .as("a")
+      .join(original_df.as("o"), Seq("id"))
+      .filter($"a.personal" === $"o.personal"
+        || $"a.created" === $"o.created"
+        || $"a.orders" === $"o.orders"
+        || $"a.orders.qty" === $"o.orders.qty"
+        || $"a.orders.price" === $"o.orders.price"
+        || $"a.mapping" == $"o.mapping")
+
+    assert(should_be_empty_df.count == 0)    
+  }
+
+
 }
 // scalastyle:on null
 
-case class Customer(id: Long, personal: Personal, created: Timestamp, orders: Array[Order])
+case class Customer(id: Long, personal: Personal, created: Timestamp, orders: Array[Order], mapping: Map[Int, Category])
 case class Personal(name: String, email: String)
-case class Order(product: String, qty: Integer, price: Double, history: Array[OrderHistory])
+case class Order(product: String, qty: Integer, price: Double, inStock: Boolean, history: Array[OrderHistory])
 case class OrderHistory(action: String)
+case class Category(id: Long, name: String)
 case class Types(
     id: Integer,
     s: String,
