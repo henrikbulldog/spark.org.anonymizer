@@ -1,4 +1,4 @@
-package com.laerdal.spark.utils
+package org.spark.anonymizer
 
 import org.apache.spark.sql._
 import org.apache.spark.sql.types._
@@ -13,7 +13,7 @@ import spray.json._ // See https://javadoc.io/static/io.spray/spray-json_2.12/1.
   *
   * To anonymize selected columns in a dataframe:
   *
-  * import henrik.thomsen.spark.utils.Anonymizer.Extensions
+  * import org.spark.Anonymizer.Extensions
   *
   * val df = input_df.anonymize((p => Array("col1", "col2").contains(p)))
   *
@@ -25,7 +25,7 @@ import spray.json._ // See https://javadoc.io/static/io.spray/spray-json_2.12/1.
   *
   * To anonymize a single column:
   *
-  * import henrik.thomsen.spark.utils.Anonymizer.Extensions
+  * import org.spark.Anonymizer.Extensions
   *
   * df.withColumn("anonymized_col1", Anonymizer.AnonymizeStringUdf($"col1"))
   */

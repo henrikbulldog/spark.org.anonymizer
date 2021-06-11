@@ -15,7 +15,7 @@ You may not be able to copy production data as-is due to legal and regulatory de
 To anonymize all columns in a DataFrame, simply call the extension method DataFrame.anonymize.
 
 ```
-import Anonymizer.Extensions
+import org.spark.anonymizer.Anonymizer.Extensions
 
 case class Info(id: Long, email: String, phone: String)
 var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com", "+45 1234 5678")).toDF
@@ -50,7 +50,7 @@ Notice that anonymization is format-preserving:
 To anonymize selected columns in a DataFrame, specify a filter method to DataFrame.anonymize:
 
 ```
-import Anonymizer.Extensions
+import org.spark.anonymizer.Anonymizer.Extensions
 
 case class Info(id: Long, email: String)
 var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com")).toDF
@@ -121,5 +121,3 @@ Anonymization is deterministic; same input will allways yield same output. This 
 - Complex types
   - ArrayType(elementType, containsNull): Represents values comprising a sequence of elements with the type of elementType. containsNull is used to indicate if elements in a ArrayType value can have null values.
   - MapType(keyType, valueType, valueContainsNull): Represents values comprising a set of key-value pairs. The data type of keys is described by keyType and the data type of values is described by valueType. For a MapType value, keys are not allowed to have null values. valueContainsNull is used to indicate if values of a MapType value can have null values.
- 
-## Handling Complex Types (Array and Map)
