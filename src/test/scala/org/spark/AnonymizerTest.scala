@@ -1,4 +1,4 @@
-package com.laerdal.spark.utils.test
+package org.spark.anonymizer.test
 
 import org.scalatest.{FlatSpec}
 
@@ -8,8 +8,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec}
-import com.laerdal.spark.utils.Anonymizer
-import com.laerdal.spark.utils.Anonymizer.Extensions
+import org.spark.anonymizer.Anonymizer
+import org.spark.anonymizer.Anonymizer.Extensions
 
 // scalastyle:off null
 class AnonymizerTest extends FlatSpec {
