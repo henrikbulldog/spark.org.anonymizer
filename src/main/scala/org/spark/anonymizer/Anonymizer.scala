@@ -5,8 +5,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 import java.sql.{Date, Timestamp}
 import java.math.BigDecimal
-import scala.math.signum
 import spray.json._ // See https://javadoc.io/static/io.spray/spray-json_2.12/1.3.5/spray/json/index.html
+import scala.math.signum
 
 /**
   * Anonymizes selected columns in a dataframe while preserving format.
