@@ -9,7 +9,7 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec}
 import org.spark.anonymizer.Anonymizer
-import org.spark.anonymizer.Anonymizer.Extensions
+import org.spark.anonymizer.DataFrame.Extensions
 
 // scalastyle:off null
 class AnonymizerTest extends FlatSpec {

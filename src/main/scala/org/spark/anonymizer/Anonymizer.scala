@@ -383,16 +383,4 @@ object Anonymizer extends Serializable {
     val anonymizedJson = AnonymizeJsonStringUdf(json)
     from_json(anonymizedJson, f.dataType).as(f.name)
   }
-
-  implicit class Extensions(dataframe: DataFrame) {
-
-    /**
-      * Anonymize selected fields in a dataframe.
-      *  @param columnPathFilter: A function to filter what column paths are anonymized.
-      *  @return: Anonymized dataframe.
-      */
-    def anonymize(columnPathFilter: String => Boolean = (p => true)): DataFrame = {
-      Anonymizer.anonymize(dataframe, columnPathFilter)
-    }
-  }
 }
