@@ -1,6 +1,4 @@
 name := "spark-org-anonymizer"
-
-version := "1.0.0"
 scalaVersion := "2.11.12"
 organization := "com.laerdal"
 organizationName := "Laerdal Copenhagen"
@@ -25,19 +23,41 @@ licenses := Seq("UNLICENSE" -> url("https://unlicense.org"))
 publishMavenStyle := true
 publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
+
+sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 publishTo in ThisBuild := {
-  val nexus = "https://oss.sonatype.org/"
+  val nexus = "https://s01.oss.sonatype.org/"
   if (isSnapshot.value)
     Some("snapshots" at nexus + "content/repositories/snapshots")
   else
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
+
+
 scmInfo := Some(
   ScmInfo(
     url("https://github.com/henrikbulldog/spark.org.anonymizer"),
     "scm:git:git@github.com:henrikbulldog/spark.org.anonymizer.git"
   )
 )
+import ReleaseTransformations._
+releaseCrossBuild := true
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies, // check that there are no SNAPSHOT dependencies
+  inquireVersions, // ask user to enter the current and next version
+  runClean, // clean
+  runTest, // run tests
+  setReleaseVersion, // set release version in version.sbt
+  commitReleaseVersion, // commit the release version
+  tagRelease, // create git tag
+  releaseStepCommandAndRemaining("+publishSigned"), // run +publishSigned command to sonatype stage release
+  setNextVersion, // set next version in version.sbt
+  commitNextVersion, // commit next version
+  releaseStepCommand("sonatypeRelease"), // run sonatypeRelease and publish to maven central
+  pushChanges // push changes to git
+)
+
 developers := List(
   Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/"))
 )
