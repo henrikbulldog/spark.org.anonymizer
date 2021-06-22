@@ -121,3 +121,19 @@ Anonymization is deterministic; same input will allways yield same output. This 
 - Complex types
   - ArrayType(elementType, containsNull): Represents values comprising a sequence of elements with the type of elementType. containsNull is used to indicate if elements in a ArrayType value can have null values.
   - MapType(keyType, valueType, valueContainsNull): Represents values comprising a set of key-value pairs. The data type of keys is described by keyType and the data type of values is described by valueType. For a MapType value, keys are not allowed to have null values. valueContainsNull is used to indicate if values of a MapType value can have null values.
+    
+Maintainers
+-------------------  
+## Release Preparation
+- Sonatype credentials need to be defined inside global sbt settings While publishing the artifact with sbt, sbt-sonatype can pick them up from the $HOME/.sbt/(sbt-version 0.13 or 1.0)/sonatype.sbt file Like below .
+          `credentials += Credentials(
+              "Sonatype Nexus Repository Manager",
+               "sonatype repository url",
+              "<sonatype username>",
+              "<sonatype password>"
+  )`
+- Configure PGP key pair to sign the artifacts using sbt-pgp plugin.
+
+## Releases
+Maintainers must run `sbt release` to release the artifacts to maven central.It will asks current version, next version of the project.
+

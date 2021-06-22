@@ -12,9 +12,10 @@ dist/*
 target/
 lib_managed/
 src_managed/
-project/*
 !project/Dependencies.scala
 scalastyle-config.xml
+.bsp/
+project/build.properties
 
 # Scala-IDE specific
 .scala_dependencies
@@ -29,3 +30,4 @@ null/
 testruns/
 
 .vscode/
+
