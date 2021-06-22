@@ -135,5 +135,5 @@ Maintainers
 - Configure PGP key pair to sign the artifacts using sbt-pgp plugin.
 
 ## Releases
-Maintainers must run `sbt release` to release the artifacts to maven central.It will asks current version, next version of the project.
+Maintainers must run `sbt release` to release the artifacts to maven central.It will asks current version, next version of the artifacts.
 
