@@ -1,13 +1,20 @@
 package org.spark.anonymizer
 
-class FirstNameConverter extends NameConverter {
+class FirstNameConverter(nameDatabase: NameDatabase, serialRange: Integer = 0)
+    extends NameConverter(nameDatabase) {
 
   override def getName(seed: Option[Integer] = None): Option[String] = {
     var random = new scala.util.Random
     seed match {
-       case None => random = new scala.util.Random
-       case _ => random = new scala.util.Random(seed.get)
+      case None => random = new scala.util.Random
+      case _ => random = new scala.util.Random(seed.get)
     }
-    Some(Names.Adjectives(random.nextInt.abs % Names.Adjectives.size))
+    val firstNames = nameDatabase.getFirstNames()
+    val firstName = firstNames(random.nextInt.abs % firstNames.size)
+    if (serialRange > 0) {
+      Some(s"${firstName} ${random.nextInt.abs % serialRange}")
+    } else {
+      Some(firstName)
+    }
   }
 }

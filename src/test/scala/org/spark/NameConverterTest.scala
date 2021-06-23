@@ -34,11 +34,11 @@ class NameConverterTest extends FlatSpec {
   import spark.implicits._
 
   "Name conversion" should "be possible" in {
-    var df = Seq((1,"Henrik", "Thomsen", "Henrik Thomsen", "secret")).toDF("id", "firstname", "lastname", "fullname", "secret")
-   
+    var df = Seq((1,"Henrik", "Thomsen", "Henrik Thomsen")).toDF("id", "firstname", "lastname", "fullname")
+
     val convertedDf = df.convertFirstName((p => p == "firstname"))
-      .convertLastName((p => p == "lastname"))
-      .convertFullName((p => p == "fullname"))
+      .convertLastName((p => p == "lastname"), 0)
+      .convertFullName((p => p == "fullname"), 0, 0)
 
     convertedDf.show(false)
   }

@@ -4,23 +4,16 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
-class NameConverter {
-  def getName(seed: Option[Integer] = None): Option[String] = {
-    var random = new scala.util.Random
-    seed match {
-       case None => random = new scala.util.Random
-       case _ => random = new scala.util.Random(seed.get)
-    }
-    Some(s"${Names.Adjectives(random.nextInt.abs % Names.Adjectives.size)} ${Names.Nouns(random.nextInt.abs % Names.Nouns.size)} ${random.nextInt.abs % 100}")
-  }
+abstract class NameConverter(nameDatabase: NameDatabase) {
+  def getName(seed: Option[Integer] = None): Option[String]
 
   def convertName(s: Option[String]): Option[String] = {
     s match {
-       case None => None
-       case _ =>
-         val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
-         getName(Some(seed))
-      }
+      case None => None
+      case _ =>
+        val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
+        getName(Some(seed))
+    }
   }
 
   val ConvertNameUdf = udf[Option[String], String](s => convertName(Option(s)))
