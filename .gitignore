@@ -12,6 +12,7 @@ dist/*
 target/
 lib_managed/
 src_managed/
+project
 !project/Dependencies.scala
 scalastyle-config.xml
 .bsp/
@@ -23,6 +24,7 @@ project/build.properties
 .idea
 .bloop/
 .metals/
+metals.sbt
 .scalafmt.conf
 
 # Laerdal test run directory
