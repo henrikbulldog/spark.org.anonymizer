@@ -1,5 +1,5 @@
 name := "spark-org-anonymizer"
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.12"
 organization := "com.laerdal"
 organizationName := "Laerdal Copenhagen"
 
