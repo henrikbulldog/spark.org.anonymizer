@@ -13,7 +13,7 @@ copyDocAssetsTask := {
   IO.copyDirectory(sourceDir, targetDir)
 }
 
-copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).valuetest
+copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).value
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
