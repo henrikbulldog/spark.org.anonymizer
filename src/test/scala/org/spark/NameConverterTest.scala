@@ -37,8 +37,8 @@ class NameConverterTest extends FlatSpec {
     var df = Seq((1,"Henrik", "Thomsen", "Henrik Thomsen")).toDF("id", "firstname", "lastname", "fullname")
 
     val convertedDf = df.convertFirstName((p => p == "firstname"))
-      .convertLastName((p => p == "lastname"), 0)
-      .convertFullName((p => p == "fullname"), 0, 0)
+      .convertLastName((p => p == "lastname"))
+      .convertFullName((p => p == "fullname"))
 
     df.show(false)
     convertedDf.show(false)
@@ -65,8 +65,8 @@ class NameConverterTest extends FlatSpec {
 
     var convertedDf = convert(df, ConversionMethods.Anonymize, config, ((df, cols) => df.anonymize(p => cols.contains(p))))
     convertedDf = convert(convertedDf, ConversionMethods.ConvertFirstName, config, ((df, cols) => df.convertFirstName(p => cols.contains(p))))
-    convertedDf = convert(convertedDf, ConversionMethods.ConvertLastName, config, ((df, cols) => df.convertLastName(p => cols.contains(p))))
-    convertedDf = convert(convertedDf, ConversionMethods.ConvertFullName, config, ((df, cols) => df.convertFullName(p => cols.contains(p))))
+    convertedDf = convert(convertedDf, ConversionMethods.ConvertLastName, config, ((df, cols) => df.convertLastName(p => cols.contains(p), Some(100))))
+    convertedDf = convert(convertedDf, ConversionMethods.ConvertFullName, config, ((df, cols) => df.convertFullName(p => cols.contains(p), None, Some(100))))
 
     df.show(false)
     convertedDf.show(false)

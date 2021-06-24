@@ -2,9 +2,9 @@ package org.spark.anonymizer
 
 class FullNameConverter(
     nameDatabase: NameDatabase,
-    firstSerialRange: Integer = 0,
-    lastSerialRange: Integer = 100
-) extends NameConverter(nameDatabase) {
+    firstSerialRange: Option[Integer] = None,
+    lastSerialRange: Option[Integer] = None
+) extends NameConverter(nameDatabase) with Serializable {
 
   override def getName(seed: Option[Integer] = None): Option[String] = {
     val firstName = new FirstNameConverter(nameDatabase, firstSerialRange).getName(seed).get

@@ -13,11 +13,11 @@ copyDocAssetsTask := {
   IO.copyDirectory(sourceDir, targetDir)
 }
 
-copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).value
+copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).valuetest
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
-libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
+libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.2"
 
 homepage := Some(url("https://github.com/henrikbulldog/spark.org.anonymizer"))
 licenses := Seq("UNLICENSE" -> url("https://unlicense.org"))

@@ -3,7 +3,7 @@ package org.spark.anonymizer
 import scalaj.http.{Http, HttpResponse}
 import java.nio.charset.StandardCharsets
 
-object OnlineNameDatabase extends NameDatabase {
+object OnlineNameDatabase extends NameDatabase with Serializable {
 
   protected var FirstNamesCache: Option[Seq[String]] = None
   protected var LastNamesCache: Option[Seq[String]] = None

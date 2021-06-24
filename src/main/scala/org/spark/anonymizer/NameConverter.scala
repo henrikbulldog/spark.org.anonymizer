@@ -4,7 +4,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
-abstract class NameConverter(nameDatabase: NameDatabase) {
+abstract class NameConverter(nameDatabase: NameDatabase) extends Serializable {
   def getName(seed: Option[Integer] = None): Option[String]
 
   def convertName(s: Option[String]): Option[String] = {
@@ -16,7 +16,7 @@ abstract class NameConverter(nameDatabase: NameDatabase) {
     }
   }
 
-  val ConvertNameUdf = udf[Option[String], String](s => convertName(Option(s)))
+  val convertNameUdf = udf[Option[String], String](s => convertName(Option(s)))
 
   def convert(df: DataFrame, columnPathFilter: String => Boolean = (p => true)): DataFrame = {
     df.select(traverse(df.schema, columnPathFilter): _*)
@@ -37,7 +37,7 @@ abstract class NameConverter(nameDatabase: NameDatabase) {
         case _ =>
           if (columnPathFilter(path + f.name)) {
             f.dataType match {
-              case dt: StringType => ConvertNameUdf(c).as(f.name)
+              case dt: StringType => convertNameUdf(c).as(f.name)
               case _ => c
             }
           } else {

@@ -16,22 +16,22 @@ object DataFrame {
 
     def convertFirstName(
         columnPathFilter: String => Boolean = (p => true),
-        serialRange: Integer = 0
+        serialRange: Option[Integer] = None
     ): DataFrame = {
       new FirstNameConverter(OnlineNameDatabase, serialRange).convert(dataframe, columnPathFilter)
     }
 
     def convertLastName(
         columnPathFilter: String => Boolean = (p => true),
-        serialRange: Integer = 100
+        serialRange: Option[Integer] = None
     ): DataFrame = {
       new LastNameConverter(OnlineNameDatabase, serialRange).convert(dataframe, columnPathFilter)
     }
 
     def convertFullName(
         columnPathFilter: String => Boolean = (p => true),
-        firstSerialRange: Integer = 0,
-        lastSerialRange: Integer = 100
+        firstSerialRange: Option[Integer] = None,
+        lastSerialRange: Option[Integer] = None
     ): DataFrame = {
       new FullNameConverter(OnlineNameDatabase, firstSerialRange, lastSerialRange)
         .convert(dataframe, columnPathFilter)
