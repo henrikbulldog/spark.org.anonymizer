@@ -40,7 +40,14 @@ class NameConverterTest extends FlatSpec {
       .convertLastName((p => p == "lastname"), 0)
       .convertFullName((p => p == "fullname"), 0, 0)
 
+    df.show(false)
     convertedDf.show(false)
+
+    val shouldBeEmptyDf = df.as("o")
+    .join(convertedDf.as("c"), $"o.id" === $"c.id")
+    .where("o.firstName = c.firstName or o.lastName = c.lastName or o.fullName = c.fullName")
+    assert(shouldBeEmptyDf.count == 0)
+
   }
 
   "Name conversion" should "be configurable" in {
@@ -60,7 +67,14 @@ class NameConverterTest extends FlatSpec {
     convertedDf = convert(convertedDf, ConversionMethods.ConvertFirstName, config, ((df, cols) => df.convertFirstName(p => cols.contains(p))))
     convertedDf = convert(convertedDf, ConversionMethods.ConvertLastName, config, ((df, cols) => df.convertLastName(p => cols.contains(p))))
     convertedDf = convert(convertedDf, ConversionMethods.ConvertFullName, config, ((df, cols) => df.convertFullName(p => cols.contains(p))))
+
+    df.show(false)
     convertedDf.show(false)
+
+    val shouldBeEmptyDf = df.as("o")
+    .join(convertedDf.as("c"), $"o.id" === $"c.id")
+    .where("o.firstName = c.firstName or o.lastName = c.lastName or o.fullName = c.fullName or o.secret = c.secret")
+    assert(shouldBeEmptyDf.count == 0)
   }
 
   def convert(
