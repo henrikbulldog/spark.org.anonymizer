@@ -1,5 +1,4 @@
 name := "spark-org-anonymizer"
-scalaVersion := "2.12.12"
 organization := "com.laerdal"
 organizationName := "Laerdal Copenhagen"
 
@@ -58,6 +57,15 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepCommand("sonatypeRelease"), // run sonatypeRelease and publish to maven central
   pushChanges // push changes to git
 )
+//Asembly
+assemblyJarName in assembly := s"${name.value}_${scalaBinaryVersion.value}-${version.value}.jar"
+addArtifact(artifact in (Compile, assembly), assembly)
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}
+
+
 
 developers := List(
   Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/"))
