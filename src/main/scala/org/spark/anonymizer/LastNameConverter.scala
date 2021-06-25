@@ -1,7 +1,10 @@
 package org.spark.anonymizer
 
-class LastNameConverter(nameDatabase: NameDatabase, serialRange: Option[Integer] = None)
-    extends NameConverter(nameDatabase) with Serializable {
+class LastNameConverter(
+    nameDatabase: NameDatabase,
+    serialRange: Option[Integer] = None
+) extends NameConverter(nameDatabase)
+    with Serializable {
 
   override def getName(seed: Option[Integer] = None): Option[String] = {
     var random = new scala.util.Random

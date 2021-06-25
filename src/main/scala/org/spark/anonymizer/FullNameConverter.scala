@@ -16,15 +16,18 @@ class FullNameConverter(
     s match {
       case None => None
       case _ =>
-        val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
-        val firstName = s.get.split(" ").head
-        val lastName = s.get.split(" ").tail.mkString(" ")
-        val convertedFirstName =
-          new FirstNameConverter(nameDatabase, firstSerialRange).convertName(Some(firstName)).get
-        val convertedLastName =
-          new LastNameConverter(nameDatabase, lastSerialRange).convertName(Some(lastName)).get
-        Some(s"$convertedFirstName $convertedLastName")
+        if(s.get.trim == "") {
+          s
+        } else {
+          val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
+          val firstName = s.get.split(" ").head
+          val lastName = s.get.split(" ").tail.mkString(" ")
+          val convertedFirstName =
+            new FirstNameConverter(nameDatabase, firstSerialRange).convertName(Some(firstName)).get
+          val convertedLastName =
+            new LastNameConverter(nameDatabase, lastSerialRange).convertName(Some(lastName)).get
+          Some(s"$convertedFirstName $convertedLastName")
+        }
     }
   }
-
 }

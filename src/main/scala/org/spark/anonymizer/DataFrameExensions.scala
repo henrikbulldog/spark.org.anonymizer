@@ -15,25 +15,28 @@ object DataFrame {
     }
 
     def convertFirstName(
+        nameDatabase: NameDatabase,
         columnPathFilter: String => Boolean = (p => true),
         serialRange: Option[Integer] = None
     ): DataFrame = {
-      new FirstNameConverter(OnlineNameDatabase, serialRange).convert(dataframe, columnPathFilter)
+      new FirstNameConverter(nameDatabase, serialRange).convert(dataframe, columnPathFilter)
     }
 
     def convertLastName(
+        nameDatabase: NameDatabase,
         columnPathFilter: String => Boolean = (p => true),
         serialRange: Option[Integer] = None
     ): DataFrame = {
-      new LastNameConverter(OnlineNameDatabase, serialRange).convert(dataframe, columnPathFilter)
+      new LastNameConverter(nameDatabase, serialRange).convert(dataframe, columnPathFilter)
     }
 
     def convertFullName(
+        nameDatabase: NameDatabase,
         columnPathFilter: String => Boolean = (p => true),
         firstSerialRange: Option[Integer] = None,
         lastSerialRange: Option[Integer] = None
     ): DataFrame = {
-      new FullNameConverter(OnlineNameDatabase, firstSerialRange, lastSerialRange)
+      new FullNameConverter(nameDatabase, firstSerialRange, lastSerialRange)
         .convert(dataframe, columnPathFilter)
     }
   }
