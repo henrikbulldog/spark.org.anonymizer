@@ -136,4 +136,5 @@ Maintainers
 
 ## Releases
 Maintainers must run `sbt release` to release the artifacts to maven central.It will asks current version, next version of the artifacts.
+It's to be noted that `sbt release` will only release artifcats with recent scala version mentioned in `.travis.yml`.To release in multiple versions of scala we should use `sbt +release`
 
