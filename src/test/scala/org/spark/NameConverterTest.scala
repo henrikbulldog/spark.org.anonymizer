@@ -1,7 +1,6 @@
 package org.spark.anonymizer.test
 
-import org.scalatest.{FlatSpec}
-
+import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec}
@@ -27,19 +26,30 @@ case class TableConversion(
 )
 
 // scalastyle:off null
-class NameConverterTest extends FlatSpec {
-  val spark = SparkSession.builder
-    .appName("NameConverterTest")
-    .master("local[*]")
-    .getOrCreate()
+class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
+  var spark: SparkSession = _
 
-  import spark.implicits._
+  override protected def beforeAll() {
+    spark = SparkSession.builder
+      .appName("AnonymizerTest")
+      .master("local[*]")
+      .getOrCreate()
 
-  val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstNames.txt").getLines.toSeq
-  val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastNames.txt").getLines.toSeq
+    spark.sparkContext.setLogLevel("WARN")
+  }
+
+  override protected def afterAll() {
+    spark.close()
+  }
+
+  val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstnames.txt").getLines.toSeq
+  val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastnames.txt").getLines.toSeq
   val nameDatabase = new StringNameDatabase(Some(firstNames), Some(lastNames))
 
   "Name conversion" should "be possible" in {
+    val sc = spark
+    import sc.implicits._
+
     var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen")).toDF(
       "id",
       "firstname",
@@ -63,6 +73,9 @@ class NameConverterTest extends FlatSpec {
   }
 
   "Name conversion" should "deal with empty data" in {
+    val sc = spark
+    import sc.implicits._
+
     var df = Seq((1, null, "", " ")).toDF(
       "id",
       "firstname",
@@ -97,6 +110,9 @@ class NameConverterTest extends FlatSpec {
   }
 
   "Name conversion" should "be configurable" in {
+    val sc = spark
+    import sc.implicits._
+
     var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen", "secret")).toDF(
       "id",
       "firstname",

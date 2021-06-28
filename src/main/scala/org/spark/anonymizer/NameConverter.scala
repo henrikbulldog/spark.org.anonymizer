@@ -11,7 +11,7 @@ abstract class NameConverter(nameDatabase: NameDatabase) extends Serializable {
     s match {
       case None => None
       case _ =>
-        if(s.get.trim == "") {
+        if (s.get.trim == "") {
           s
         } else {
           val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs

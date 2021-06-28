@@ -6,14 +6,14 @@ object DefaultNameDatabase extends NameDatabase with Serializable {
   protected var LastNamesCache: Seq[String] = Seq()
 
   override def getFirstNames(): Seq[String] = {
-    if(FirstNamesCache.size == 0) {
+    if (FirstNamesCache.size == 0) {
       throw new Exception("First names must be initialized")
     }
     FirstNamesCache
   }
 
   override def getLastNames(): Seq[String] = {
-    if(LastNamesCache.size == 0) {
+    if (LastNamesCache.size == 0) {
       throw new Exception("Last names must be initialized")
     }
     LastNamesCache

@@ -24,6 +24,7 @@ licenses := Seq("UNLICENSE" -> url("https://unlicense.org"))
 publishMavenStyle := true
 publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
+parallelExecution in Test := false
 
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"

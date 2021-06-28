@@ -11,14 +11,14 @@ class WebNameDatabase(
 ) extends NameDatabase
     with Serializable {
 
-  protected var FirstNamesCache: Option[Seq[String]] = None
-  protected var LastNamesCache: Option[Seq[String]] = None
+  protected var firstNamesCache: Option[Seq[String]] = None
+  protected var lastNamesCache: Option[Seq[String]] = None
 
   override def getFirstNames(): Seq[String] = {
-    if (FirstNamesCache == None) {
+    if (firstNamesCache == None) {
       val rawString = sendHttpGetRequest(firstNamesUrl)
       val bytes = rawString.getBytes(StandardCharsets.US_ASCII)
-      FirstNamesCache = Some(
+      firstNamesCache = Some(
         new String(bytes, StandardCharsets.UTF_8)
           .split("\n")
           .toSeq
@@ -26,14 +26,14 @@ class WebNameDatabase(
           .filter(_ != "")
       )
     }
-    FirstNamesCache.get
+    firstNamesCache.get
   }
 
   override def getLastNames(): Seq[String] = {
-    if (LastNamesCache == None) {
+    if (lastNamesCache == None) {
       val rawString = sendHttpGetRequest(lastNamesUrl)
       val bytes = rawString.getBytes(StandardCharsets.US_ASCII)
-      LastNamesCache = Some(
+      lastNamesCache = Some(
         new String(bytes, StandardCharsets.UTF_8)
           .split("\n")
           .toSeq
@@ -41,7 +41,7 @@ class WebNameDatabase(
           .filter(_ != "")
       )
     }
-    LastNamesCache.get
+    lastNamesCache.get
   }
 
   protected def sendHttpGetRequest(request: String): String = {
