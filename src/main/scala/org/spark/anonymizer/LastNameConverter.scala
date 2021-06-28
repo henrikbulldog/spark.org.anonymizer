@@ -1,7 +1,10 @@
 package org.spark.anonymizer
 
-class LastNameConverter(nameDatabase: NameDatabase, serialRange: Integer = 100)
-    extends NameConverter(nameDatabase) {
+class LastNameConverter(
+    nameDatabase: NameDatabase,
+    serialRange: Option[Integer] = None
+) extends NameConverter(nameDatabase)
+    with Serializable {
 
   override def getName(seed: Option[Integer] = None): Option[String] = {
     var random = new scala.util.Random
@@ -11,10 +14,9 @@ class LastNameConverter(nameDatabase: NameDatabase, serialRange: Integer = 100)
     }
     val lastNames = nameDatabase.getLastNames()
     val lastName = lastNames(random.nextInt.abs % lastNames.size)
-    if (serialRange > 0) {
-      Some(s"${lastName} ${random.nextInt.abs % serialRange}")
-    } else {
-      Some(lastName)
+    serialRange match {
+      case None => Some(lastName)
+      case _ => Some(s"${lastName} ${random.nextInt.abs % serialRange.get}")
     }
   }
 }

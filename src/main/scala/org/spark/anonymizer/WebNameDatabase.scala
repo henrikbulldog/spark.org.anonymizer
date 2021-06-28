@@ -3,19 +3,22 @@ package org.spark.anonymizer
 import scalaj.http.{Http, HttpResponse}
 import java.nio.charset.StandardCharsets
 
-object OnlineNameDatabase extends NameDatabase {
+class WebNameDatabase(
+    firstNamesUrl: String =
+      "https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/first%20names/us.txt",
+    lastNamesUrl: String =
+      "https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/surnames/us.txt"
+) extends NameDatabase
+    with Serializable {
 
-  protected var FirstNamesCache: Option[Seq[String]] = None
-  protected var LastNamesCache: Option[Seq[String]] = None
+  protected var firstNamesCache: Option[Seq[String]] = None
+  protected var lastNamesCache: Option[Seq[String]] = None
 
-  override def getFirstNames(locale: String = "us"): Seq[String] = {
-    if (FirstNamesCache == None) {
-      val rawString = sendHttpGetRequest(
-        s"https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/first%20names/$locale.txt"
-      )
-
+  override def getFirstNames(): Seq[String] = {
+    if (firstNamesCache == None) {
+      val rawString = sendHttpGetRequest(firstNamesUrl)
       val bytes = rawString.getBytes(StandardCharsets.US_ASCII)
-      FirstNamesCache = Some(
+      firstNamesCache = Some(
         new String(bytes, StandardCharsets.UTF_8)
           .split("\n")
           .toSeq
@@ -23,17 +26,14 @@ object OnlineNameDatabase extends NameDatabase {
           .filter(_ != "")
       )
     }
-    FirstNamesCache.get
+    firstNamesCache.get
   }
 
-  override def getLastNames(locale: String = "us"): Seq[String] = {
-    if (LastNamesCache == None) {
-      val rawString = sendHttpGetRequest(
-        s"https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/surnames/$locale.txt"
-      )
-
+  override def getLastNames(): Seq[String] = {
+    if (lastNamesCache == None) {
+      val rawString = sendHttpGetRequest(lastNamesUrl)
       val bytes = rawString.getBytes(StandardCharsets.US_ASCII)
-      LastNamesCache = Some(
+      lastNamesCache = Some(
         new String(bytes, StandardCharsets.UTF_8)
           .split("\n")
           .toSeq
@@ -41,7 +41,7 @@ object OnlineNameDatabase extends NameDatabase {
           .filter(_ != "")
       )
     }
-    LastNamesCache.get
+    lastNamesCache.get
   }
 
   protected def sendHttpGetRequest(request: String): String = {
