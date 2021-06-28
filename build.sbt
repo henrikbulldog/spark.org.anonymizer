@@ -1,7 +1,8 @@
+import sbtassembly.AssemblyPlugin.assemblySettings
+
 name := "spark-org-anonymizer"
-scalaVersion := "2.12.12"
-organization := "com.laerdal"
-organizationName := "Laerdal Copenhagen"
+organization := "io.github.henrikbulldog "
+organizationName := "io.github.henrikbulldog "
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-Yrangepos", "-Ywarn-unused-import")
 Compile / doc / scalacOptions := Seq("-groups", "-implicits", "-diagrams", "-diagrams-debug")
@@ -43,6 +44,15 @@ scmInfo := Some(
     "scm:git:git@github.com:henrikbulldog/spark.org.anonymizer.git"
   )
 )
+//Assembly
+assemblyJarName in assembly := s"${name.value}_${scalaBinaryVersion.value}-${version.value}.jar"
+addArtifact(artifact in (Compile, assembly), assembly)
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}
+assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+
 import ReleaseTransformations._
 releaseCrossBuild := true
 releaseProcess := Seq[ReleaseStep](
@@ -59,6 +69,10 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepCommand("sonatypeRelease"), // run sonatypeRelease and publish to maven central
   pushChanges // push changes to git
 )
+
+
+
+
 
 developers := List(
   Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/"))
