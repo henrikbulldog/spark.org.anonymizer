@@ -4,25 +4,35 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
-abstract class NameConverter(nameDatabase: NameDatabase) extends Serializable {
-  def getName(seed: Option[Integer] = None): Option[String]
-
-  def convertName(s: Option[String]): Option[String] = {
-    s match {
-      case None => None
-      case _ =>
-        if (s.get.trim == "") {
-          s
-        } else {
-          val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
-          getName(Some(seed))
-        }
+abstract class NameConverter extends Serializable {
+  def getName(
+      names: Seq[String],
+      serialRange: Option[Integer] = None,
+      seed: Option[Integer] = None
+  ): Option[String] = {
+    var random = new scala.util.Random
+    seed match {
+      case None => random = new scala.util.Random
+      case _ => random = new scala.util.Random(seed.get)
+    }
+    val name = names(random.nextInt.abs % names.size)
+    serialRange match {
+      case None => Some(name)
+      case _ => Some(s"${name} ${random.nextInt.abs % serialRange.get}")
     }
   }
 
-  val convertNameUdf = udf[Option[String], String](s => convertName(Option(s)))
+  def convertName(
+      s: Option[String]
+  ): Option[String]
 
-  def convert(df: DataFrame, columnPathFilter: String => Boolean = (p => true)): DataFrame = {
+  val convertNameUdf = udf[Option[String], String](s => convertName(Option(s))
+  )
+
+  def convert(
+      df: DataFrame,
+      columnPathFilter: String => Boolean = (p => true)
+  ): DataFrame = {
     df.select(traverse(df.schema, columnPathFilter): _*)
   }
 
@@ -36,8 +46,10 @@ abstract class NameConverter(nameDatabase: NameDatabase) extends Serializable {
       val c = col(path + f.name)
       f.dataType match {
         case s: StructType =>
-          when(c.isNotNull, struct(traverse(s, columnPathFilter, path + f.name + "."): _*))
-            .as(f.name)
+          when(
+            c.isNotNull,
+            struct(traverse(s, columnPathFilter, path + f.name + "."): _*)
+          ).as(f.name)
         case _ =>
           if (columnPathFilter(path + f.name)) {
             f.dataType match {
