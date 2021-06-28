@@ -216,12 +216,12 @@ object Anonymizer extends Serializable {
 
   val MinNumber = 128
 
-/**
+  /**
     * Function to anonymize a Long while preserving its number of digits.
     *  @param l: Long to anonymize.
     *  @return: Anonymized Long.
     */
-    def anonymizeLong(l: Option[Long]): Option[Long] = {
+  def anonymizeLong(l: Option[Long]): Option[Long] = {
     l match {
       case None => None
       case _ =>

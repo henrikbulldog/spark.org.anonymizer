@@ -7,18 +7,26 @@ import java.time.{LocalDateTime}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.SparkSession
-import org.scalatest.{FlatSpec}
+import org.scalatest.{FlatSpec, BeforeAndAfterAll}
 import org.spark.anonymizer.Anonymizer
 import org.spark.anonymizer.DataFrame.Extensions
 
 // scalastyle:off null
-class AnonymizerTest extends FlatSpec {
-  val spark = SparkSession.builder
-    .appName("AnonymizerTest")
-    .master("local[*]")
-    .getOrCreate()
+class AnonymizerTest extends FlatSpec with BeforeAndAfterAll {
+  var spark: SparkSession = _
 
-  import spark.implicits._
+  override protected def beforeAll() {
+    spark = SparkSession.builder
+      .appName("AnonymizerTest")
+      .master("local[*]")
+      .getOrCreate()
+
+    spark.sparkContext.setLogLevel("WARN")
+  }
+
+  override protected def afterAll() {
+    spark.close()
+  }
 
   "Anonymizing a string" should "be format presreving" in {
     var s = ""
@@ -51,6 +59,9 @@ class AnonymizerTest extends FlatSpec {
   }
 
   "Anonymizing all simple data types" should "be supported" in {
+    val sc = spark
+    import sc.implicits._
+
     var original_df = Seq(
       Types(
         1,
@@ -100,6 +111,9 @@ class AnonymizerTest extends FlatSpec {
   }
 
   "Same input" should "yield same output" in {
+    val sc = spark
+    import sc.implicits._
+
     var original_df = Seq(
       Types(
         1,
@@ -175,6 +189,9 @@ class AnonymizerTest extends FlatSpec {
   }
 
   "Anonymizing complex data types" should "be supported" in {
+    val sc = spark
+    import sc.implicits._
+
     var original_df = createCustomers.toDF
 
     val anonymized_df = original_df.anonymize((p => p != "id"))

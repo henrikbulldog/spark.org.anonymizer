@@ -18,13 +18,14 @@ copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).value
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
-libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.3.0"
+libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.2"
 
 homepage := Some(url("https://github.com/henrikbulldog/spark.org.anonymizer"))
 licenses := Seq("UNLICENSE" -> url("https://unlicense.org"))
 publishMavenStyle := true
 publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
+parallelExecution in Test := false
 
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
