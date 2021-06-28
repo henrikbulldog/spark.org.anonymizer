@@ -1,8 +1,8 @@
 import sbtassembly.AssemblyPlugin.assemblySettings
 
 name := "spark-org-anonymizer"
-organization := "com.laerdal"
-organizationName := "Laerdal Copenhagen"
+organization := "io.github.henrikbulldog "
+organizationName := "io.github.henrikbulldog "
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-Yrangepos", "-Ywarn-unused-import")
 Compile / doc / scalacOptions := Seq("-groups", "-implicits", "-diagrams", "-diagrams-debug")
