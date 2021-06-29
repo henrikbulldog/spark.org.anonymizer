@@ -3,20 +3,19 @@ package org.spark.anonymizer
 class LastNameConverter(
     nameDatabase: NameDatabase,
     serialRange: Option[Integer] = None
-) extends NameConverter(nameDatabase)
+) extends NameConverter
     with Serializable {
 
-  override def getName(seed: Option[Integer] = None): Option[String] = {
-    var random = new scala.util.Random
-    seed match {
-      case None => random = new scala.util.Random
-      case _ => random = new scala.util.Random(seed.get)
-    }
-    val lastNames = nameDatabase.getLastNames()
-    val lastName = lastNames(random.nextInt.abs % lastNames.size)
-    serialRange match {
-      case None => Some(lastName)
-      case _ => Some(s"${lastName} ${random.nextInt.abs % serialRange.get}")
+  override def convertName(s: Option[String]): Option[String] = {
+    s match {
+      case None => None
+      case _ =>
+        if (s.get.trim == "") {
+          s
+        } else {
+          val seed = scala.util.hashing.MurmurHash3.stringHash(s.get).abs
+          getName(nameDatabase.getLastNames(), serialRange, Some(seed))
+        }
     }
   }
 }

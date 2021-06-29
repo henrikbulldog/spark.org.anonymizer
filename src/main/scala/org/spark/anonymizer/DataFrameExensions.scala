@@ -4,7 +4,6 @@ import org.apache.spark.sql.DataFrame
 
 object DataFrame {
   implicit class Extensions(dataframe: DataFrame) {
-
     /**
       * Anonymize selected fields in a dataframe.
       *  @param columnPathFilter: A function to filter what column paths are anonymized.
@@ -36,8 +35,11 @@ object DataFrame {
         firstSerialRange: Option[Integer] = None,
         lastSerialRange: Option[Integer] = None
     ): DataFrame = {
-      new FullNameConverter(nameDatabase, firstSerialRange, lastSerialRange)
-        .convert(dataframe, columnPathFilter)
+      new FullNameConverter(
+        nameDatabase,
+        firstSerialRange,
+        lastSerialRange
+      ).convert(dataframe, columnPathFilter)
     }
   }
 }
