@@ -65,11 +65,15 @@ class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
     df.show(false)
     convertedDf.show(false)
 
-    val shouldBeEmptyDf = df
+    var shouldBeEmptyDf = df
       .as("o")
       .join(convertedDf.as("c"), $"o.id" === $"c.id")
       .where("o.firstName = c.firstName or o.lastName = c.lastName or o.fullName = c.fullName")
-    assert(shouldBeEmptyDf.count == 0)
+    assert(shouldBeEmptyDf.count == 0, "Expected all columns to be changed")
+
+    shouldBeEmptyDf = convertedDf
+    .where("concat(firstName, ' ', lastName) <> fullName")
+    assert(shouldBeEmptyDf.count == 0, "Expected firstname + lastname = fullname")
   }
 
   "Name conversion" should "deal with empty data" in {

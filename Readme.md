@@ -46,6 +46,36 @@ Notice that anonymization is format-preserving:
 - Number of letters in the string are preserved
 - Non-alphanumerics are preserved (. and @)
 
+### Name Conversion
+If you are not happy with random letters, but want real world names, you can do name conversions like this:
+```
+import org.spark.anonymizer.Anonymizer.Extensions
+
+val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstnames.txt").getLines.toSeq
+val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastnames.txt").getLines.toSeq
+val nameDatabase = new StringNameDatabase(Some(firstNames), Some(lastNames))
+var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen"))
+  .toDF("id", "firstname", "lastname", "fullname")
+val convertedDf = df
+  .convertFirstName(nameDatabase, p => p == "firstname")
+  .convertLastName(nameDatabase, p => p == "lastname")
+  .convertFullName(nameDatabase, p => p == "fullname")
+```
+
+Output:
+```
++---+---------+--------+--------------+
+|id |firstname|lastname|fullname      |
++---+---------+--------+--------------+
+|1  |Henrik   |Thomsen |Henrik Thomsen|
++---+---------+--------+--------------+
+
++---+---------+--------+---------------+
+|id |firstname|lastname|fullname       |
++---+---------+--------+---------------+
+|1  |Kennith  |Hommell |Kennith Hommell|
++---+---------+--------+---------------+
+```
 ### Anonymizing selected columns
 To anonymize selected columns in a DataFrame, specify a filter method to DataFrame.anonymize:
 
