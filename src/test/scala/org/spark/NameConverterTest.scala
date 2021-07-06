@@ -5,7 +5,6 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec}
 import org.spark.anonymizer.DataFrame.Extensions
-import org.spark.anonymizer.StringNameDatabase
 import scala.io.Source
 
 object ConversionMethods {
@@ -44,23 +43,24 @@ class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
 
   val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstnames.txt").getLines.toSeq
   val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastnames.txt").getLines.toSeq
-  val nameDatabase = new StringNameDatabase(Some(firstNames), Some(lastNames))
 
   "Name conversion" should "be possible" in {
     val sc = spark
     import sc.implicits._
 
-    var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen")).toDF(
+    var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen", "Sales")).toDF(
       "id",
       "firstname",
       "lastname",
-      "fullname"
+      "fullname",
+      "department"
     )
 
     val convertedDf = df
-      .convertFirstName(nameDatabase, p => p == "firstname")
-      .convertLastName(nameDatabase, p => p == "lastname")
-      .convertFullName(nameDatabase, p => p == "fullname")
+      .convertName(p => p == "firstname", firstNames)
+      .convertName(p => p == "lastname", lastNames)
+      .convertFullName(p => p == "fullname", firstNames, None, lastNames, None)
+      .convertFullName(p => p == "department", firstNames, None, lastNames, None)
 
     df.show(false)
     convertedDf.show(false)
@@ -88,9 +88,9 @@ class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
     )
 
     val convertedDf = df
-      .convertFirstName(nameDatabase, p => p == "firstname")
-      .convertLastName(nameDatabase, p => p == "lastname")
-      .convertFullName(nameDatabase, p => p == "fullname")
+      .convertName(p => p == "firstname", firstNames)
+      .convertName(p => p == "lastname", lastNames)
+      .convertFullName(p => p == "fullname", firstNames, None, lastNames, None)
 
     df.show(false)
     convertedDf.show(false)
@@ -145,19 +145,19 @@ class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
       convertedDf,
       ConversionMethods.ConvertFirstName,
       config,
-      ((df, cols) => df.convertFirstName(nameDatabase, p => cols.contains(p)))
+      ((df, cols) => df.convertName(p => cols.contains(p), firstNames))
     )
     convertedDf = convert(
       convertedDf,
       ConversionMethods.ConvertLastName,
       config,
-      ((df, cols) => df.convertLastName(nameDatabase, p => cols.contains(p), Some(100)))
+      ((df, cols) => df.convertName(p => cols.contains(p), lastNames, Some(100)))
     )
     convertedDf = convert(
       convertedDf,
       ConversionMethods.ConvertFullName,
       config,
-      ((df, cols) => df.convertFullName(nameDatabase, p => cols.contains(p), None, Some(100)))
+      ((df, cols) => df.convertFullName(p => cols.contains(p), firstNames, None, lastNames, Some(100)))
     )
 
     df.show(false)

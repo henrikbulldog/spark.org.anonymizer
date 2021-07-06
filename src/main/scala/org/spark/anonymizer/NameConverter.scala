@@ -4,12 +4,13 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 
-abstract class NameConverter extends Serializable {
+case class NameList(names: Seq[String], serialRange: Option[Integer] = None)
+class NameConverter(nameLists: Seq[NameList]) extends Serializable {
   def getName(
       names: Seq[String],
       serialRange: Option[Integer] = None,
       seed: Option[Integer] = None
-  ): Option[String] = {
+  ): String = {
     var random = new scala.util.Random
     seed match {
       case None => random = new scala.util.Random
@@ -17,17 +18,33 @@ abstract class NameConverter extends Serializable {
     }
     val name = names(random.nextInt.abs % names.size)
     serialRange match {
-      case None => Some(name)
-      case _ => Some(s"${name} ${random.nextInt.abs % serialRange.get}")
+      case None => name
+      case _ => s"${name} ${random.nextInt.abs % serialRange.get}"
     }
   }
 
-  def convertName(
-      s: Option[String]
-  ): Option[String]
+  def convertName(s: Option[String]): Option[String] = {
+    s match {
+      case None => None
+      case _ =>
+        if (s.get.trim == "") {
+          s
+        } else {
+          val parts = s.get.split(" ")
+          val convertedParts = nameLists.map(
+            e =>
+              getName(
+                e.names,
+                e.serialRange,
+                Some(scala.util.hashing.MurmurHash3.stringHash(parts((parts.size-1).min(nameLists.indexOf(e)))))
+              )
+          )
+          Some(convertedParts.mkString(" "))
+        }
+    }
+  }
 
-  val convertNameUdf = udf[Option[String], String](s => convertName(Option(s))
-  )
+  val convertNameUdf = udf[Option[String], String](s => convertName(Option(s)))
 
   def convert(
       df: DataFrame,
