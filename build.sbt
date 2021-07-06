@@ -75,5 +75,6 @@ releaseProcess := Seq[ReleaseStep](
 
 
 developers := List(
-  Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/"))
+  Developer("henrik", "Henrik Thomsen", "henrik.thomsen.dk@gmail.com", url("https://www.linkedin.com/in/henrikt/")),
+  Developer("rajesh", "Rajesh Dash", "rajesh.dash@laerdal.com", url("https://www.rajeshblogs.in/"))
 )
