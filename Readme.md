@@ -17,7 +17,7 @@ Get the jar from Maven by adding a reference to io.github.henrikbulldog:spark-or
 To anonymize all columns in a DataFrame, simply call the extension method DataFrame.anonymize.
 
 ```
-import org.spark.anonymizer.Anonymizer.Extensions
+import org.spark.anonymizer.DataFrame.Extensions
 
 case class Info(id: Long, email: String, phone: String)
 var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com", "+45 1234 5678")).toDF
