@@ -15,7 +15,7 @@ copyDocAssetsTask := {
 }
 
 copyDocAssetsTask := (copyDocAssetsTask triggeredBy (doc in Compile)).value
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.5"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.0.1"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.2"
