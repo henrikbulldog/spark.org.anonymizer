@@ -5,9 +5,9 @@ import java.nio.charset.StandardCharsets
 
 class WebNameDatabase(
     firstNamesUrl: String =
-      "https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/first%20names/us.txt",
+      "https://raw.githubusercontent.com/henrikbulldog/spark.org.anonymizer/main/data/firstnames.us.txt",
     lastNamesUrl: String =
-      "https://raw.githubusercontent.com/smashew/NameDatabases/master/NamesDatabases/surnames/us.txt"
+      "https://raw.githubusercontent.com/henrikbulldog/spark.org.anonymizer/main/data/surnames.us.txt"
 ) extends NameDatabase
     with Serializable {
 

@@ -42,8 +42,8 @@ class NameConverterTest extends FlatSpec with BeforeAndAfterAll {
     spark.close()
   }
 
-  val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstnames.txt").getLines.toSeq
-  val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastnames.txt").getLines.toSeq
+  val firstNames = Source.fromFile("data/firstnames.us.txt").getLines.toSeq
+  val lastNames = Source.fromFile("data/surnames.us.txt").getLines.toSeq
   val nameDatabase = new StringNameDatabase(Some(firstNames), Some(lastNames))
 
   "Name conversion" should "be possible" in {
