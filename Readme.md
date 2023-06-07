@@ -12,7 +12,7 @@ Unit testing can get you a long way, but more often than not production data con
 You may not be able to copy production data as-is due to legal and regulatory demands, hence the need for an anonymization utility.
 
 ## Usage
-Get the jar from Maven by adding a reference to io.github.henrikbulldog:spark-org-anonymizer_2.12:1.0.3.
+Get the jar from Maven by adding a reference to io.github.henrikbulldog:spark-org-anonymizer_2.12:1.0.2.
 
 To anonymize all columns in a DataFrame, simply call the extension method DataFrame.anonymize.
 
