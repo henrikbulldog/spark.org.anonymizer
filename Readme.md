@@ -51,17 +51,21 @@ Notice that anonymization is format-preserving:
 ### Name Conversion
 If you are not happy with random letters, but want real world names, you can do name conversions like this:
 ```
-import org.spark.anonymizer.Anonymizer.Extensions
+import org.spark.anonymizer.DataFrame.Extensions
+import org.spark.anonymizer.StringNameDatabase
+import scala.io.Source
 
-val firstNames = Source.fromFile("src/test/scala/org/spark/data/firstnames.txt").getLines.toSeq
-val lastNames = Source.fromFile("src/test/scala/org/spark/data/lastnames.txt").getLines.toSeq
+val firstNames = Source.fromURL("https://raw.githubusercontent.com/henrikbulldog/spark.org.anonymizer/main/data/firstnames.us.txt").getLines.toSeq
+val lastNames = Source.fromURL("https://raw.githubusercontent.com/henrikbulldog/spark.org.anonymizer/main/data/surnames.us.txt").getLines.toSeq
 val nameDatabase = new StringNameDatabase(Some(firstNames), Some(lastNames))
 var df = Seq((1, "Henrik", "Thomsen", "Henrik Thomsen"))
   .toDF("id", "firstname", "lastname", "fullname")
-val convertedDf = df
+df.show(false)
+val converted_df = df
   .convertFirstName(nameDatabase, p => p == "firstname")
   .convertLastName(nameDatabase, p => p == "lastname")
   .convertFullName(nameDatabase, p => p == "fullname")
+converted_df.show(false)
 ```
 
 Output:
