@@ -86,7 +86,7 @@ Output:
 To anonymize selected columns in a DataFrame, specify a filter method to DataFrame.anonymize:
 
 ```
-import org.spark.anonymizer.Anonymizer.Extensions
+import org.spark.anonymizer.DataFrame.Extensions
 
 case class Info(id: Long, email: String)
 var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com")).toDF
