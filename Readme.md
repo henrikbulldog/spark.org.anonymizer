@@ -14,6 +14,7 @@ You may not be able to copy production data as-is due to legal and regulatory de
 ## Usage
 Get the jar from Maven by adding a reference to io.github.henrikbulldog:spark-org-anonymizer_2.12:1.0.2.
 
+### Anonymizing All Columns
 To anonymize all columns in a DataFrame, simply call the extension method DataFrame.anonymize.
 
 ```
@@ -48,6 +49,35 @@ Notice that anonymization is format-preserving:
 - Number of letters in the string are preserved
 - Non-alphanumerics are preserved (. and @)
 
+### Anonymizing Selected Columns
+To anonymize selected columns in a DataFrame, specify a filter method to DataFrame.anonymize:
+
+```
+import org.spark.anonymizer.DataFrame.Extensions
+
+case class Info(id: Long, email: String)
+var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com")).toDF
+df.show(false)
+df.anonymize((p => p != "id")).show(false)
+```
+
+Output:
+
+```
++----------+---------------------------+
+|id        |email                      |
++----------+---------------------------+
+|1234567890|Firstname.Lastname@mail.com|
++----------+---------------------------+
+
++----------+---------------------------+
+|id        |email                      |
++----------+---------------------------+
+|1234567890|Etlkbwhcd.Qcfjczes@upcb.how|
++----------+---------------------------+
+```
+
+The filter (p => p != "id") anonymizes all columns except id.
 ### Name Conversion
 If you are not happy with random letters, but want real world names, you can do name conversions like this:
 ```
@@ -82,36 +112,6 @@ Output:
 |1  |Kennith  |Hommell |Kennith Hommell|
 +---+---------+--------+---------------+
 ```
-### Anonymizing selected columns
-To anonymize selected columns in a DataFrame, specify a filter method to DataFrame.anonymize:
-
-```
-import org.spark.anonymizer.DataFrame.Extensions
-
-case class Info(id: Long, email: String)
-var df = Seq(Info(1234567890, "Firstname.Lastname@mail.com")).toDF
-df.show(false)
-df.anonymize((p => p != "id")).show(false)
-```
-
-Output:
-
-```
-+----------+---------------------------+
-|id        |email                      |
-+----------+---------------------------+
-|1234567890|Firstname.Lastname@mail.com|
-+----------+---------------------------+
-
-+----------+---------------------------+
-|id        |email                      |
-+----------+---------------------------+
-|1234567890|Etlkbwhcd.Qcfjczes@upcb.how|
-+----------+---------------------------+
-```
-
-The filter (p => p != "id") anonymizes all columns except id.
-
 ## Implementation Stategies
 
 ### Irreversible
